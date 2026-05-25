@@ -3,29 +3,30 @@ $(document).ready(function(){
     const usernameElement = document.querySelector('#username');
     const avatarElement = document.querySelector('#avatar');
     const reposElement = document.querySelector('#repositorios');
-    const followersElement = document.querySelector('#seguindo');
-    const followingElement = document.querySelector('#seguidores');
+    const followersElement = document.querySelector('#seguidores');
+    const followingElement = document.querySelector('#seguindo');
     const linkElement = document.querySelector('#link');
     const endpoint = 'https://api.github.com/users/ogiansouza';
 
-    $.ajax(endpoint).done(function(resposta){
+    async function carregarDadosDoGithub() {
+        try {
+            const resposta = await $.ajax(endpoint);
 
-        nameElement.innterText = resposta.name;
-        usernameElement.innerText = resposta.login;
-        avatarElement.src = resposta.avatar_url;
-        followersElement.innerText = resposta.followers;
-        followingElement.innerText = resposta.following;
-        reposElement.innerText = resposta.public_repos;
-        linkElement.href = resposta.html_url;
+            if (!resposta.html_url) {
+                throw new Error('A API nao retornou o link do GitHub');
+            }
 
-        if (!resposta.html_url) {
-        throw new Error("A API não retornou o link do github");
+            nameElement.innerText = resposta.name;
+            usernameElement.innerText = resposta.login;
+            avatarElement.src = resposta.avatar_url;
+            followersElement.innerText = resposta.followers;
+            followingElement.innerText = resposta.following;
+            reposElement.innerText = resposta.public_repos;
+            linkElement.href = resposta.html_url;
+        } catch (error) {
+            alert('Erro na requisicao GET');
         }
-    })
+    }
 
-    .catch(function(error){
-        alert("Erro nas requisições GET");
-    })
-
-
+    carregarDadosDoGithub();
 })
